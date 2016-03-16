@@ -1,2 +1,2 @@
 # CSE5522-project
-We build an AI for Gomoku as a semester project
+We are working on a voice-based gender identifying system for Class Project
