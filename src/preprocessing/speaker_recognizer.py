@@ -19,12 +19,12 @@ def feature_extract(wav_name, winlen=0.025, winstep=0.01):
     mfcc_feat = mfcc(signal, rate)
     return mfcc_feat
 
-numpy.random.seed(133)
 def randomize(dataset, labels):
-  permutation = np.random.permutation(labels.shape[0])
-  shuffled_dataset = dataset[permutation,:,:]
-  shuffled_labels = labels[permutation]
-  return shuffled_dataset, shuffled_labels
+    numpy.random.seed(133)
+    permutation = numpy.random.permutation(labels.shape[0])
+    shuffled_dataset = dataset[permutation,:]
+    shuffled_labels = labels[permutation]
+    return shuffled_dataset, shuffled_labels
 
 def model_preprocess(directory_name):
     """This function extracts *.wav files from each sub directory, store all features to
