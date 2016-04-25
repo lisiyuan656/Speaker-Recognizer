@@ -5,6 +5,7 @@ from features import mfcc
 import scipy.io.wavfile as wav
 import vad
 import os
+from six.moves import cPickle as pickle
 
 
 
@@ -41,3 +42,19 @@ def model_preprocess(directory_name):
                 train_dataset = numpy.concatenate((train_dataset, temp_feat), axis = 0)
                 train_labels = numpy.concatenate((train_labels, temp_labels), axis = 0)
     return class_names, train_dataset, train_labels
+
+def model_save(class_names, train_dataset, train_labels):
+    pickle_file = 'train_data'
+    save = {
+        'class_names': class_names,
+        'train_dataset': train_dataset,
+        'train_labels': train_labels,
+    }
+    f = open(pickle_file, 'wb')
+    pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
+    f.close()
+
+def model_load(pickle_file):
+    f = open(pickle_file, 'r')
+    save = pickle.load(f)
+    return save['class_names'], save['train_dataset'], save['train_labels']

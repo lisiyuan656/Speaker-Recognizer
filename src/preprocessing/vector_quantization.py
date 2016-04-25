@@ -19,4 +19,7 @@ class vector_quantization:
 
 
 
+
+
+
     def test(self, class_names, test_datasets, test_labels):
