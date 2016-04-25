@@ -19,6 +19,13 @@ def feature_extract(wav_name, winlen=0.025, winstep=0.01):
     mfcc_feat = mfcc(signal, rate)
     return mfcc_feat
 
+numpy.random.seed(133)
+def randomize(dataset, labels):
+  permutation = np.random.permutation(labels.shape[0])
+  shuffled_dataset = dataset[permutation,:,:]
+  shuffled_labels = labels[permutation]
+  return shuffled_dataset, shuffled_labels
+
 def model_preprocess(directory_name):
     """This function extracts *.wav files from each sub directory, store all features to
     train_dataset (test_dataset), labels to train_labels (test_labels)"""
@@ -41,6 +48,7 @@ def model_preprocess(directory_name):
                 temp_labels = class_names.index(os.path.split(folder)[1])*numpy.ones(shape = (temp_feat.shape[0]), dtype=numpy.int)
                 train_dataset = numpy.concatenate((train_dataset, temp_feat), axis = 0)
                 train_labels = numpy.concatenate((train_labels, temp_labels), axis = 0)
+    train_dataset, train_labels = randomize(train_dataset, train_labels)
     return class_names, train_dataset, train_labels
 
 def model_save(class_names, train_dataset, train_labels):
@@ -58,3 +66,11 @@ def model_load(pickle_file):
     f = open(pickle_file, 'r')
     save = pickle.load(f)
     return save['class_names'], save['train_dataset'], save['train_labels']
+
+numpy.random.seed(133)
+def randomize(dataset, labels):
+  permutation = np.random.permutation(labels.shape[0])
+  shuffled_dataset = dataset[permutation,:,:]
+  shuffled_labels = labels[permutation]
+  return shuffled_dataset, shuffled_labels
+train_dataset, train_labels = randomize(train_dataset, train_labels)
