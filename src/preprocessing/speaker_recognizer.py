@@ -66,11 +66,3 @@ def model_load(pickle_file):
     f = open(pickle_file, 'r')
     save = pickle.load(f)
     return save['class_names'], save['train_dataset'], save['train_labels']
-
-numpy.random.seed(133)
-def randomize(dataset, labels):
-  permutation = np.random.permutation(labels.shape[0])
-  shuffled_dataset = dataset[permutation,:,:]
-  shuffled_labels = labels[permutation]
-  return shuffled_dataset, shuffled_labels
-train_dataset, train_labels = randomize(train_dataset, train_labels)
