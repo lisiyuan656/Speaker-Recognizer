@@ -30,5 +30,4 @@ class VectorQuantization:
         for i in range(len(test_dataset_list)):
             if self.predict(test_dataset_list[i])==test_label_list[i]:
                 success += 1
-                print(success)
         print ('the accuracy of the algorithm is: ', success*1.0/len(test_dataset_list))
