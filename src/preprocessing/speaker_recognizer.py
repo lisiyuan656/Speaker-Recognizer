@@ -8,7 +8,6 @@ import os
 from six.moves import cPickle as pickle
 
 
-
 def feature_extract(wav_name, winlen=0.025, winstep=0.01):
     """This function returns (mfcc) feature vectors extracted from wav_name"""
     rate, signal = wav.read(wav_name)
@@ -48,7 +47,7 @@ def model_preprocess(directory_name):
                 temp_labels = class_names.index(os.path.split(folder)[1])*numpy.ones(shape = (temp_feat.shape[0]), dtype=numpy.int)
                 train_dataset = numpy.concatenate((train_dataset, temp_feat), axis = 0)
                 train_labels = numpy.concatenate((train_labels, temp_labels), axis = 0)
-    train_dataset, train_labels = randomize(train_dataset, train_labels)
+    #train_dataset, train_labels = randomize(train_dataset, train_labels)
     return class_names, train_dataset, train_labels
 
 def model_save(class_names, train_dataset, train_labels):
@@ -66,3 +65,16 @@ def model_load(pickle_file):
     f = open(pickle_file, 'r')
     save = pickle.load(f)
     return save['class_names'], save['train_dataset'], save['train_labels']
+
+def model_test_list(directory_name):
+    class_names, test_dataset, test_labels = model_preprocess(directory_name)
+    test_dataset_list = []
+    test_label_list = []
+    for i in range(len(class_names)):
+        temp_index = [j for j in range(test_labels.shape[0]) if test_labels[j]==i]
+        temp_dataset = test_dataset[min(temp_index):max(temp_index)+1, :]
+        for j in range(10):
+            step = temp_dataset.shape[0]/10
+            test_dataset_list.append(temp_dataset[j*step:(j+1)*step, :])
+            test_label_list.append(i)
+    return test_dataset_list, test_label_list
