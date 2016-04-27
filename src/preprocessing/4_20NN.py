@@ -65,16 +65,25 @@ class NeuralNetwork:
                 layer = np.atleast_2d(a[i])
                 delta = np.atleast_2d(deltas[i])
                 self.weights[i] += learning_rate * layer.T.dot(delta)
-
-
     def predict(self, x):
-            x = np.array(x)
-            temp = np.ones(x.shape[0]+1)
-            temp[0:-1] = x
-            a = temp
-            for l in range(0, len(self.weights)):
-                a = self.activation(np.dot(a, self.weights[l]))
-            return a
+        x = np.array(x)
+        temp = np.ones((x.shape[0], 1))
+        a = np.hstack((temp,x))
+        for l in range(0, len(self.weights)):
+            a = self.activation(np.dot(a, self.weights[l]))
+        temp = sum(a)
+        max = np.max(temp)
+        for item in range (temp.shape[0]):
+            if max == temp[item]:
+                print (item)
+                return item
+
+    def test(self, test_dataset_list, test_label_list):
+        success = 0
+        for i in range(len(test_dataset_list)):
+            if self.predict(test_dataset_list[i])==test_label_list[i]:
+                success += 1
+        print ('the accuracy of the algorithm is: ', success*1.0/len(test_dataset_list))
 
     def save(self, file_name):
         f = open(file_name, 'wb')
@@ -124,10 +133,11 @@ class NeuralNetwork:
 #
 
 class_names, train_dataset, train_labels = speaker_recognizer.model_preprocess('training_data')
-class_test, test_dataset, test_labels = speaker_recognizer.model_preprocess('testing_data')
+#class_test, test_dataset, test_labels = speaker_recognizer.model_preprocess('testing_data')
+test_dataset_list, test_labels_list = speaker_recognizer.model_test_list('testing_data')
 ########start of trail 2 #################
 #nn = NeuralNetwork([400,25,25,10], 'tanh')########[400,25,25,10]and 250000 works perfect
-nn = NeuralNetwork([13, 25, 25, 3], 'tanh')
+nn = NeuralNetwork([13, 25, 25, 5], 'tanh')
 #Xorigin = np.genfromtxt('D:\pyCharmWorkSpace\Xinput.txt', delimiter=',')
 Xorigin = train_dataset
 # # X1 = Xorigin[:10]
@@ -142,7 +152,7 @@ yOrigin = train_labels
 # y = np.hstack((y1, y2))
 count = 0
 for i in yOrigin:
-    temp = np.zeros((1,3))
+    temp = np.zeros((1,5))
     temp[0,int(i)] = 1
     # y.append(temp)
     # yArr = np.array(temp)
@@ -154,9 +164,10 @@ for i in yOrigin:
 nn.fit(Xorigin, y)
 #
 random = np.random.randint(0,4000,(1,50))
+nn.test(test_dataset_list, test_labels_list)
 
-yAnswer = test_labels
-Xtest = test_dataset
+#yAnswer = test_labels
+#Xtest = test_dataset
 
 
 '''
@@ -170,8 +181,8 @@ for i in range(len(random[0])):
         '''
 
 
-for i in range(len(Xtest)):
-    print(nn.predict(Xtest[i]),'answer is :\n',yAnswer[i])
+#for i in range(len(Xtest)):
+#    print(nn.predict(Xtest[i]),'answer is :\n',yAnswer[i])
 
 '''for i in range(len(nn.weights)):
     if i == 0:
